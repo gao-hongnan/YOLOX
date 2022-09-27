@@ -70,9 +70,7 @@ class AnnotationTransform(object):
                 bndbox.append(cur_pt)
             label_idx = self.class_to_ind[name]
             bndbox.append(label_idx)
-            res = np.vstack(
-                (res, bndbox)
-            )  # [xmin, ymin, xmax, ymax, label_ind]
+            res = np.vstack((res, bndbox))  # [xmin, ymin, xmax, ymax, label_ind]
             # img_id = target.find('filename').text[:-4]
 
         width = int(target.find("size").find("width").text)
@@ -181,9 +179,7 @@ class VOCDetection(Dataset):
         )
         max_h = self.img_size[0]
         max_w = self.img_size[1]
-        cache_file = os.path.join(
-            self.root, f"img_resized_cache_{self.name}.array"
-        )
+        cache_file = os.path.join(self.root, f"img_resized_cache_{self.name}.array")
         if not os.path.exists(cache_file):
             logger.info(
                 "Caching images for the first time. This might take about 3 minutes for VOC"
@@ -242,9 +238,7 @@ class VOCDetection(Dataset):
 
     def load_resized_img(self, index):
         img = self.load_image(index)
-        r = min(
-            self.img_size[0] / img.shape[0], self.img_size[1] / img.shape[1]
-        )
+        r = min(self.img_size[0] / img.shape[0], self.img_size[1] / img.shape[1])
         resized_img = cv2.resize(
             img,
             (int(img.shape[1] * r), int(img.shape[0] * r)),
@@ -256,9 +250,7 @@ class VOCDetection(Dataset):
     def load_image(self, index):
         img_id = self.ids[index]
         img = cv2.imread(self._imgpath % img_id, cv2.IMREAD_COLOR)
-        assert (
-            img is not None
-        ), f"file named {self._imgpath % img_id} not found"
+        assert img is not None, f"file named {self._imgpath % img_id} not found"
 
         return img
 
@@ -318,9 +310,7 @@ class VOCDetection(Dataset):
 
     def _get_voc_results_file_template(self):
         filename = "comp4_det_test" + "_{:s}.txt"
-        filedir = os.path.join(
-            self.root, "results", "VOC" + self._year, "Main"
-        )
+        filedir = os.path.join(self.root, "results", "VOC" + self._year, "Main")
         if not os.path.exists(filedir):
             os.makedirs(filedir)
         path = os.path.join(filedir, filename)
@@ -388,9 +378,7 @@ class VOCDetection(Dataset):
             if iou == 0.5:
                 print("AP for {} = {:.4f}".format(cls, ap))
             if output_dir is not None:
-                with open(
-                    os.path.join(output_dir, cls + "_pr.pkl"), "wb"
-                ) as f:
+                with open(os.path.join(output_dir, cls + "_pr.pkl"), "wb") as f:
                     pickle.dump({"rec": rec, "prec": prec, "ap": ap}, f)
         if iou == 0.5:
             print("Mean AP = {:.4f}".format(np.mean(aps)))
@@ -401,19 +389,11 @@ class VOCDetection(Dataset):
             print("{:.3f}".format(np.mean(aps)))
             print("~~~~~~~~")
             print("")
-            print(
-                "--------------------------------------------------------------"
-            )
+            print("--------------------------------------------------------------")
             print("Results computed with the **unofficial** Python eval code.")
-            print(
-                "Results should be very close to the official MATLAB eval code."
-            )
-            print(
-                "Recompute with `./tools/reval.py --matlab ...` for your paper."
-            )
+            print("Results should be very close to the official MATLAB eval code.")
+            print("Recompute with `./tools/reval.py --matlab ...` for your paper.")
             print("-- Thanks, The Management")
-            print(
-                "--------------------------------------------------------------"
-            )
+            print("--------------------------------------------------------------")
 
         return np.mean(aps)

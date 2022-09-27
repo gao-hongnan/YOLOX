@@ -2,6 +2,7 @@
 *~
 
 venv_*/
+wandb/
 
 # user experiments directory
 YOLOX_outputs/
